@@ -6,6 +6,10 @@ const App: React.FC = () => {
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
   const [currentLevel, setCurrentLevel] = useState(1);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [controlHandlers, setControlHandlers] = useState<{
+    setKey?: (key: 'left' | 'right' | 'up', val: boolean) => void;
+  }>({});
 
   const handleScoreUpdate = (newScore: number) => {
     setScore(newScore);
@@ -48,9 +52,49 @@ const App: React.FC = () => {
           <MarioGame 
             onScoreUpdate={handleScoreUpdate} 
             onLevelUpdate={setCurrentLevel}
+            onPlayingChange={setIsPlaying}
+            onControlHandlersReady={setControlHandlers}
           />
           
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
+          {/* Mobile Touch Controls - Only on Mobile */}
+          <div className="md:hidden flex justify-between items-center gap-4 px-2 py-4">
+            {/* Left/Right Movement */}
+            <div className="flex gap-3">
+              <button 
+                onPointerDown={() => controlHandlers.setKey?.('left', true)}
+                onPointerUp={() => controlHandlers.setKey?.('left', false)}
+                onPointerLeave={() => controlHandlers.setKey?.('left', false)}
+                disabled={!isPlaying}
+                className="w-20 h-20 bg-slate-700/60 backdrop-blur-md border-2 border-slate-500 rounded-full flex items-center justify-center active:scale-90 active:bg-slate-600/80 transition-all disabled:opacity-30 disabled:active:scale-100"
+              >
+                <span className="text-4xl text-white">←</span>
+              </button>
+              <button 
+                onPointerDown={() => controlHandlers.setKey?.('right', true)}
+                onPointerUp={() => controlHandlers.setKey?.('right', false)}
+                onPointerLeave={() => controlHandlers.setKey?.('right', false)}
+                disabled={!isPlaying}
+                className="w-20 h-20 bg-slate-700/60 backdrop-blur-md border-2 border-slate-500 rounded-full flex items-center justify-center active:scale-90 active:bg-slate-600/80 transition-all disabled:opacity-30 disabled:active:scale-100"
+              >
+                <span className="text-4xl text-white">→</span>
+              </button>
+            </div>
+            
+            {/* Jump Button */}
+            <button 
+              onPointerDown={() => controlHandlers.setKey?.('up', true)}
+              onPointerUp={() => controlHandlers.setKey?.('up', false)}
+              onPointerLeave={() => controlHandlers.setKey?.('up', false)}
+              disabled={!isPlaying}
+              className="w-24 h-24 bg-indigo-600/60 backdrop-blur-md border-2 border-indigo-400 rounded-full flex flex-col items-center justify-center active:scale-90 active:bg-indigo-500/80 transition-all disabled:opacity-30 disabled:active:scale-100"
+            >
+              <span className="text-sm font-pixel text-white">JUMP</span>
+              <span className="text-3xl text-white">↑</span>
+            </button>
+          </div>
+
+          {/* Desktop Info Cards */}
+          <div className="hidden md:grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
             <div className="p-3 md:p-4 bg-slate-900/50 rounded-2xl border border-slate-800 text-center backdrop-blur-sm">
               <span className="block text-[10px] md:text-xs text-indigo-500 font-bold mb-1 uppercase tracking-widest">Controls</span>
               <p className="text-[10px] md:text-xs text-slate-400 font-pixel leading-relaxed">WASD / TOUCH OVERLAY</p>

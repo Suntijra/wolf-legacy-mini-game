@@ -12,6 +12,8 @@ import {
 interface GameProps {
   onScoreUpdate: (score: number) => void;
   onLevelUpdate: (level: number) => void;
+  onPlayingChange?: (isPlaying: boolean) => void;
+  onControlHandlersReady?: (handlers: { setKey: (key: 'left' | 'right' | 'up', val: boolean) => void }) => void;
 }
 
 const LEVELS: LevelConfig[] = [
@@ -41,7 +43,7 @@ const LEVELS: LevelConfig[] = [
   }
 ];
 
-const MarioGame: React.FC<GameProps> = ({ onScoreUpdate, onLevelUpdate }) => {
+const MarioGame: React.FC<GameProps> = ({ onScoreUpdate, onLevelUpdate, onPlayingChange, onControlHandlersReady }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -135,6 +137,16 @@ const MarioGame: React.FC<GameProps> = ({ onScoreUpdate, onLevelUpdate }) => {
   const setKey = (key: 'left' | 'right' | 'up', val: boolean) => {
     gameState.current.keys[key] = val;
   };
+
+  // Expose control handlers and playing state to parent component
+  useEffect(() => {
+    onPlayingChange?.(isPlaying);
+  }, [isPlaying, onPlayingChange]);
+
+  useEffect(() => {
+    onControlHandlersReady?.({ setKey });
+  }, [onControlHandlersReady]);
+
 
   const update = useCallback(() => {
     const { wolf, keys, platforms, coins, enemies, gravity, jumpForce, level } = gameState.current;
@@ -391,44 +403,7 @@ const MarioGame: React.FC<GameProps> = ({ onScoreUpdate, onLevelUpdate }) => {
         className="block w-full h-auto"
       />
 
-      {/* Touch Controls Overlay */}
-      {isPlaying && (
-        <div className="absolute inset-0 z-10 pointer-events-none md:opacity-0 hover:opacity-100 transition-opacity">
-          {/* Movement - Left Side */}
-          <div className="absolute bottom-6 left-6 flex gap-4 pointer-events-auto">
-            <button 
-              onPointerDown={() => setKey('left', true)}
-              onPointerUp={() => setKey('left', false)}
-              onPointerLeave={() => setKey('left', false)}
-              className="w-16 h-16 bg-slate-700/40 backdrop-blur-md border-2 border-slate-500 rounded-full flex items-center justify-center active:scale-90 active:bg-slate-600/60 transition-transform"
-            >
-              <span className="text-3xl text-white">←</span>
-            </button>
-            <button 
-              onPointerDown={() => setKey('right', true)}
-              onPointerUp={() => setKey('right', false)}
-              onPointerLeave={() => setKey('right', false)}
-              className="w-16 h-16 bg-slate-700/40 backdrop-blur-md border-2 border-slate-500 rounded-full flex items-center justify-center active:scale-90 active:bg-slate-600/60 transition-transform"
-            >
-              <span className="text-3xl text-white">→</span>
-            </button>
-          </div>
 
-          {/* Jump - Right Side */}
-          <div className="absolute bottom-6 right-6 pointer-events-auto">
-            <button 
-              onPointerDown={() => setKey('up', true)}
-              onPointerUp={() => setKey('up', false)}
-              onPointerLeave={() => setKey('up', false)}
-              className="w-20 h-20 bg-indigo-600/40 backdrop-blur-md border-2 border-indigo-400 rounded-full flex flex-col items-center justify-center active:scale-90 active:bg-indigo-500/60 transition-transform"
-            >
-              <span className="text-xs font-pixel text-white/80">JUMP</span>
-              <span className="text-2xl text-white">↑</span>
-            </button>
-          </div>
-        </div>
-      )}
-      
       {!isPlaying && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/80 z-20 backdrop-blur-sm p-4">
           <div className="text-center p-6 md:p-8 bg-slate-800/90 border-2 border-indigo-500 rounded-2xl shadow-2xl animate-in zoom-in duration-300 max-w-sm">
