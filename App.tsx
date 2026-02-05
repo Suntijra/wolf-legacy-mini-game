@@ -6,61 +6,11 @@ const App: React.FC = () => {
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
   const [currentLevel, setCurrentLevel] = useState(1);
-  const [apiKeySelected, setApiKeySelected] = useState(false);
-
-  useEffect(() => {
-    const checkKey = async () => {
-      if (process.env.GEMINI_API_KEY || process.env.API_KEY) {
-        setApiKeySelected(true);
-        return;
-      }
-      if (window.aistudio?.hasSelectedApiKey) {
-        const hasKey = await window.aistudio.hasSelectedApiKey();
-        setApiKeySelected(hasKey);
-      }
-    };
-    checkKey();
-  }, []);
-
-  const handleSelectKey = async () => {
-    if (window.aistudio?.openSelectKey) {
-      await window.aistudio.openSelectKey();
-      setApiKeySelected(true);
-    }
-  };
 
   const handleScoreUpdate = (newScore: number) => {
     setScore(newScore);
     if (newScore > highScore) setHighScore(newScore);
   };
-
-  if (!apiKeySelected) {
-    return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4 font-sans">
-        <div className="bg-slate-900 p-8 md:p-10 rounded-3xl border border-indigo-500 shadow-2xl text-center w-full max-w-md animate-in fade-in zoom-in duration-500">
-          <div className="w-16 h-16 md:w-20 md:h-20 bg-indigo-600 rounded-2xl flex items-center justify-center font-pixel text-3xl md:text-4xl shadow-lg shadow-indigo-500/20 mx-auto mb-6">W</div>
-          <h2 className="text-2xl md:text-3xl font-bold text-white mb-4 tracking-tight">Hunter's Mark</h2>
-          <p className="text-slate-400 mb-8 text-xs md:text-sm leading-relaxed">
-            Exploration requires an authorized hunters mark. Connect your project to begin the hunt.
-            <a 
-              href="https://ai.google.dev/gemini-api/docs/billing" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="block text-indigo-400 mt-4 underline font-semibold hover:text-indigo-300 transition-colors"
-            >
-              Billing Documentation
-            </a>
-          </p>
-          <button 
-            onClick={handleSelectKey}
-            className="w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-2xl transition-all shadow-lg shadow-indigo-500/30 transform active:scale-95"
-          >
-            Authorize Hunt
-          </button>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-slate-950 flex flex-col text-slate-100 overflow-x-hidden">
