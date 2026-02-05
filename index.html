@@ -3,7 +3,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Super AI Mario World</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -14,12 +16,30 @@
         color: #f3f4f6;
         margin: 0;
         overflow: hidden;
+        /* Disable iOS bounce/overscroll */
+        overscroll-behavior: none;
+        -webkit-overflow-scrolling: touch;
+        /* Prevent pull-to-refresh */
+        touch-action: pan-x pan-y;
+        /* Prevent text selection */
+        -webkit-user-select: none;
+        user-select: none;
+        /* Disable tap highlight */
+        -webkit-tap-highlight-color: transparent;
+        /* Disable callout (long press menu) */
+        -webkit-touch-callout: none;
+      }
+      * {
+        /* Apply touch-action to all elements */
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
       }
       .font-pixel {
         font-family: 'Press+Start+2P', cursive;
       }
     </style>
     <script type="module" src="/index.tsx"></script>
+    <script src="/mobile-gestures-blocker.js"></script>
 </head>
 <body>
     <div id="root"></div>

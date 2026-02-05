@@ -17,7 +17,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col text-slate-100 overflow-x-hidden">
+    <div className="min-h-screen bg-slate-950 flex flex-col text-slate-100 overflow-x-hidden touch-none" style={{ touchAction: 'none' }}>
       {/* Header */}
       <header className="bg-slate-900/80 backdrop-blur-md border-b border-slate-800 px-4 py-3 md:px-8 md:py-4 flex flex-col md:flex-row justify-between items-center gap-4 sticky top-0 z-30">
         <div className="flex items-center gap-3 md:gap-4 w-full md:w-auto justify-center md:justify-start">
