@@ -45,3 +45,12 @@ export interface Message {
 }
 
 export type ImageSize = '1K' | '2K' | '4K';
+
+declare global {
+  interface Window {
+    aistudio?: {
+      hasSelectedApiKey: () => Promise<boolean>;
+      openSelectKey: () => Promise<void>;
+    };
+  }
+}

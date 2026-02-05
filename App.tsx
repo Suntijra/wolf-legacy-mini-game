@@ -10,6 +10,10 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const checkKey = async () => {
+      if (process.env.GEMINI_API_KEY || process.env.API_KEY) {
+        setApiKeySelected(true);
+        return;
+      }
       if (window.aistudio?.hasSelectedApiKey) {
         const hasKey = await window.aistudio.hasSelectedApiKey();
         setApiKeySelected(hasKey);
